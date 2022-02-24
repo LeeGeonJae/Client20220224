@@ -40,18 +40,19 @@ int main()
 	ServerAddr.sin_family = PF_INET; //IP V4
 	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-	//4. 연결 - 물리적인 연결을 Socket이랑 연결
+	//4. 연결 - 물리적인 연결을 Socket랑 연결
 	if (connect(ServerSocket, (SOCKADDR*)&ServerAddr, sizeof(ServerAddr)) == SOCKET_ERROR)
 	{
 		cout << "connect Error : " << GetLastError() << endl;
 		exit(-1);
 	}
 
-	string Numbers = "30\n";
-	send(ServerSocket, Numbers.c_str(), Numbers.length() , 0);
-	Numbers = "20\n";
-	send(ServerSocket, Numbers.c_str(), Numbers.length() + 1 , 0);
+	NumberPacket Packet;
 
+	Packet.Number1 = 10;
+	Packet.Number2 = 20;
+
+	send(ServerSocket, (char*)(&Packet), sizeof(Packet), 0);
 
 	char Result[1024];
 	recv(ServerSocket, Result, 1023, 0);
@@ -61,7 +62,7 @@ int main()
 	//6. 소켓 닫기
 	closesocket(ServerSocket);
 
-	//7. 원속 정리
+	//7. 윈속 정리
 	WSACleanup();
 
 	return 0;
